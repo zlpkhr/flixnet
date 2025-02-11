@@ -1,8 +1,6 @@
 import { Suspense } from 'react';
 import { getMovies } from '@/services/movieService';
-import MovieGrid from '@/components/MovieGrid';
-import SearchHeader from '@/components/SearchHeader';
-import FilterBar from '@/components/FilterBar';
+import SearchContainer from '@/components/SearchContainer';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,14 +12,13 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 interface HomePageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function Home({ searchParams }: HomePageProps) {
-  const params = await searchParams;
   // Safely extract and parse the search parameters
-  const pageParam = typeof params.page === 'string' ? params.page : '0';
-  const queryParam = typeof params.query === 'string' ? params.query : '';
+  const pageParam = typeof searchParams.page === 'string' ? searchParams.page : '0';
+  const queryParam = typeof searchParams.query === 'string' ? searchParams.query : '';
 
   // Parse page number from URL, defaulting to 0 if not present or invalid
   const currentPage = Number(pageParam);
@@ -42,29 +39,10 @@ export default async function Home({ searchParams }: HomePageProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-blue-500/10 blur-3xl" />
           <div className="absolute inset-0 bg-gradient-to-t from-transparent via-purple-800/5 to-transparent" />
         </div>
-        <SearchHeader />
-        <FilterBar />
-        <Suspense fallback={<MovieGridSkeleton />}>
-          <MovieGrid initialData={movies} page={page} />
-        </Suspense>
+        <SearchContainer initialData={movies} page={page} />
       </main>
     );
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch movies');
   }
-}
-
-function MovieGridSkeleton() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div
-            key={i}
-            className="aspect-[2/3] animate-pulse rounded-sm bg-purple-900/20"
-          />
-        ))}
-      </div>
-    </div>
-  );
 }

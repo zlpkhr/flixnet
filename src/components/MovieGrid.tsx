@@ -10,6 +10,12 @@ interface MovieGridProps {
   page: number;
 }
 
+function MovieCardSkeleton() {
+  return (
+    <div className="aspect-[2/3] animate-pulse rounded-sm bg-purple-900/20" />
+  );
+}
+
 export default function MovieGrid({ initialData, page }: MovieGridProps) {
   const [movies, setMovies] = useState<Movie[]>(initialData.items);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,19 +73,17 @@ export default function MovieGrid({ initialData, page }: MovieGridProps) {
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
+        {isLoading && (
+          <>
+            {Array.from({ length: limit }).map((_, i) => (
+              <MovieCardSkeleton key={`skeleton-${i}`} />
+            ))}
+          </>
+        )}
       </div>
       
-      {hasMore && (
-        <div 
-          ref={observerTarget}
-          className="flex justify-center items-center p-4 mt-4"
-        >
-          {isLoading ? (
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500" />
-          ) : (
-            <div className="h-8" /> // Spacer for intersection observer
-          )}
-        </div>
+      {hasMore && !isLoading && (
+        <div ref={observerTarget} className="h-4" /> // Hidden observer target
       )}
     </div>
   );
