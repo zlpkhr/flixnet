@@ -1,24 +1,46 @@
-const filters = [
-  "A-Z",
-  "Movies",
-  "Series",
-  "Originals",
-  "Action",
-  "Comedy",
-  "Drama",
-  "Fantasy & Sci-fi",
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
+
+const QUICK_FILTERS = [
+  { label: 'Action', query: 'action' },
+  { label: 'Drama', query: 'drama' },
+  { label: 'Comedy', query: 'comedy' },
+  { label: 'Sci-Fi', query: 'sci-fi' },
+  { label: 'Horror', query: 'horror' },
+  { label: 'Romance', query: 'romance' },
 ];
 
 export default function FilterBar() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentQuery = searchParams.get('query') || '';
+
+  const handleFilterClick = (query: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (currentQuery === query) {
+      params.delete('query');
+    } else {
+      params.set('query', query);
+    }
+    params.delete('page'); // Reset to first page on filter change
+    router.push(`/?${params.toString()}`);
+  };
+
   return (
-    <div className="container mx-auto overflow-x-auto px-4 py-4">
-      <div className="flex space-x-2">
-        {filters.map((filter) => (
+    <div className="container mx-auto px-4 py-4">
+      <div className="flex flex-wrap gap-2">
+        {QUICK_FILTERS.map(({ label, query }) => (
           <button
-            key={filter}
-            className="whitespace-nowrap rounded-full bg-white/5 px-4 py-1.5 text-sm transition-colors hover:bg-white/10"
+            key={query}
+            onClick={() => handleFilterClick(query)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+              ${currentQuery === query
+                ? 'bg-purple-500 text-white'
+                : 'bg-white/5 hover:bg-white/10 text-white/80'
+              }`}
           >
-            {filter}
+            {label}
           </button>
         ))}
       </div>

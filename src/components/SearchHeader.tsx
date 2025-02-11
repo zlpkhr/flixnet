@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useMovies } from "@/context/MovieContext";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useEffect } from "react";
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -22,13 +22,21 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function SearchHeader() {
-  const { setSearchQuery } = useMovies();
-  const [inputValue, setInputValue] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [inputValue, setInputValue] = useState(searchParams.get('query') || '');
   const debouncedSearch = useDebounce(inputValue, 300);
 
   useEffect(() => {
-    setSearchQuery(debouncedSearch);
-  }, [debouncedSearch, setSearchQuery]);
+    const params = new URLSearchParams(searchParams.toString());
+    if (debouncedSearch) {
+      params.set('query', debouncedSearch);
+    } else {
+      params.delete('query');
+    }
+    params.delete('page'); // Reset to first page on search
+    router.push(`/?${params.toString()}`);
+  }, [debouncedSearch, router, searchParams]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-sm">

@@ -15,7 +15,9 @@ export async function getMovies({ skip = 0, limit = 10, query }: GetMoviesParams
   if (limit) params.append('limit', limit.toString());
   if (query) params.append('query', query);
 
-  const response = await fetch(`${API_BASE_URL}/movies/?${params.toString()}`);
+  const response = await fetch(`${API_BASE_URL}/movies/?${params.toString()}`, {
+    cache: 'no-store' // Disable caching
+  });
   
   if (!response.ok) {
     let errorMsg = 'Failed to fetch movies';
