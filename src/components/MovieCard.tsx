@@ -1,27 +1,34 @@
 import Image from "next/image";
-import type { Movie } from "@/app/types/movie";
+import type { Movie } from "@/types/movie";
 import { Star } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { useState } from "react";
 
 interface MovieCardProps {
   movie: Movie;
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const fallbackImage = `https://placehold.co/400x600/1a103c/e2e8f0?text=${encodeURIComponent(movie.title)}`;
+
   return (
     <HoverCard openDelay={0} closeDelay={0}>
       <HoverCardTrigger asChild>
-        <div className="group relative aspect-[2/3] cursor-pointer overflow-hidden rounded-sm">
+        <div className="group relative aspect-[2/3] cursor-pointer overflow-hidden rounded-sm bg-purple-900/20">
           <Image
-            src={movie.image_url || "/placeholder.svg"}
+            src={imageError ? fallbackImage : movie.image_url}
             alt={movie.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
+            onError={() => setImageError(true)}
+            priority={false}
+            quality={75}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <div className="absolute bottom-0 p-4 text-white">

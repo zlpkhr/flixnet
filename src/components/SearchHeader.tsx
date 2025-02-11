@@ -1,7 +1,35 @@
+"use client";
+
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useMovies } from "@/context/MovieContext";
+import { useCallback, useState, useEffect } from "react";
+
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export default function SearchHeader() {
+  const { setSearchQuery } = useMovies();
+  const [inputValue, setInputValue] = useState("");
+  const debouncedSearch = useDebounce(inputValue, 300);
+
+  useEffect(() => {
+    setSearchQuery(debouncedSearch);
+  }, [debouncedSearch, setSearchQuery]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-center px-4">
@@ -11,6 +39,8 @@ export default function SearchHeader() {
             type="search"
             placeholder="Search movies..."
             className="w-full border-white/10 bg-white/5 pl-9 focus-visible:ring-white/20"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
           />
         </div>
       </div>
