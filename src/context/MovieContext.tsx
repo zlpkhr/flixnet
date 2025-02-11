@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { Movie } from "@/types/movie";
 import { getMovies } from "@/services/movieService";
 
@@ -14,6 +14,7 @@ interface MovieContextType {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   limit: number;
+  refetch: () => void;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -27,32 +28,32 @@ export function MovieProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState("");
   const limit = 12;
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await getMovies({
-          skip: page * limit,
-          limit: limit,
-          query: searchQuery || undefined,
-        });
-        setMovies(response.items);
-        setTotal(response.total);
-      } catch (err) {
-        setError('Failed to fetch movies. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchMovies = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await getMovies({
+        skip: page * limit,
+        limit: limit,
+        query: searchQuery || undefined,
+      });
+      setMovies(response.items);
+      setTotal(response.total);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch movies. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, limit, searchQuery]);
 
-    // Reset to first page when search query changes
-    if (page !== 0 && searchQuery) {
+  useEffect(() => {
+    // When search query changes and page is not 0, reset page to 0
+    if (searchQuery && page !== 0) {
       setPage(0);
     } else {
       fetchMovies();
     }
-  }, [page, searchQuery]);
+  }, [page, searchQuery, fetchMovies]);
 
   return (
     <MovieContext.Provider
@@ -66,6 +67,7 @@ export function MovieProvider({ children }: { children: ReactNode }) {
         searchQuery,
         setSearchQuery,
         limit,
+        refetch: fetchMovies,
       }}
     >
       {children}

@@ -4,12 +4,17 @@ import MovieCard from "./MovieCard";
 import { useMovies } from "@/context/MovieContext";
 
 export default function MovieGrid() {
-  const { movies, loading, error, total, page, setPage, limit } = useMovies();
+  const { movies, loading, error, total, page, setPage, limit, refetch } = useMovies();
 
-  if (error) {
+  if (error && !loading) {
     return (
       <div className="container mx-auto px-4 py-8 text-center text-red-500">
         <p>{error}</p>
+        <button 
+          onClick={refetch} 
+          className="mt-4 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">
+          Retry
+        </button>
       </div>
     );
   }

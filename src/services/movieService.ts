@@ -18,7 +18,14 @@ export async function getMovies({ skip = 0, limit = 10, query }: GetMoviesParams
   const response = await fetch(`${API_BASE_URL}/movies/?${params.toString()}`);
   
   if (!response.ok) {
-    throw new Error('Failed to fetch movies');
+    let errorMsg = 'Failed to fetch movies';
+    try {
+      const errorData = await response.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      // fall back to default error message
+    }
+    throw new Error(errorMsg);
   }
 
   return response.json();
