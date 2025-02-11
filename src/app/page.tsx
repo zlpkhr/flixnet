@@ -4,7 +4,6 @@ import MovieGrid from '@/components/MovieGrid';
 import SearchHeader from '@/components/SearchHeader';
 import FilterBar from '@/components/FilterBar';
 import { Metadata } from 'next';
-import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'FlixNet - Movie Discovery',
@@ -13,8 +12,6 @@ export const metadata: Metadata = {
 
 // Force dynamic rendering to ensure fresh data
 export const dynamic = 'force-dynamic';
-// Disable static generation since we need fresh data
-export const revalidate = 0;
 
 interface HomePageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
