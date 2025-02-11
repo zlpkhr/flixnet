@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useRef } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import MovieCard from "./MovieCard"
-import type { Movie } from "@/app/types/movie"
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import MovieCard from "./MovieCard";
+import type { Movie } from "@/app/types/movie";
 
 // Mock data matching the API schema
 const movies: Movie[] = [
@@ -26,7 +26,8 @@ const movies: Movie[] = [
   {
     id: "3",
     title: "You've Got Mail",
-    description: "Two business rivals who despise each other in real life unwittingly fall in love over the Internet.",
+    description:
+      "Two business rivals who despise each other in real life unwittingly fall in love over the Internet.",
     image_url: "/placeholder.svg?height=600&width=400",
     rating: 6.9,
   },
@@ -54,28 +55,37 @@ const movies: Movie[] = [
     image_url: "/placeholder.svg?height=600&width=400",
     rating: 6.8,
   },
-]
+];
 
 interface MovieRowProps {
-  title: string
+  title: string;
 }
 
 export default function MovieRow({ title }: MovieRowProps) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const { scrollLeft, clientWidth } = scrollContainerRef.current
-      const scrollTo = direction === "left" ? scrollLeft - clientWidth : scrollLeft + clientWidth
-      scrollContainerRef.current.scrollTo({ left: scrollTo, behavior: "smooth" })
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const scrollTo =
+        direction === "left"
+          ? scrollLeft - clientWidth
+          : scrollLeft + clientWidth;
+      scrollContainerRef.current.scrollTo({
+        left: scrollTo,
+        behavior: "smooth",
+      });
     }
-  }
+  };
 
   return (
     <section className="relative px-4 md:px-8">
-      <h2 className="text-xl font-medium mb-4">{title}</h2>
+      <h2 className="mb-4 text-xl font-medium">{title}</h2>
       <div className="group relative">
-        <div ref={scrollContainerRef} className="flex space-x-4 overflow-x-scroll scrollbar-hide">
+        <div
+          ref={scrollContainerRef}
+          className="scrollbar-hide flex space-x-4 overflow-x-scroll"
+        >
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
@@ -83,21 +93,26 @@ export default function MovieRow({ title }: MovieRowProps) {
 
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
-          style={{ background: "linear-gradient(to right, rgba(15,10,31,0.9), rgba(15,10,31,0))" }}
+          className="absolute bottom-0 left-0 top-0 flex w-12 items-center justify-center opacity-0 transition-opacity disabled:opacity-0 group-hover:opacity-100"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(15,10,31,0.9), rgba(15,10,31,0))",
+          }}
         >
-          <ChevronLeft className="w-8 h-8" />
+          <ChevronLeft className="h-8 w-8" />
         </button>
 
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 top-0 bottom-0 flex items-center justify-center w-12 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
-          style={{ background: "linear-gradient(to left, rgba(15,10,31,0.9), rgba(15,10,31,0))" }}
+          className="absolute bottom-0 right-0 top-0 flex w-12 items-center justify-center opacity-0 transition-opacity disabled:opacity-0 group-hover:opacity-100"
+          style={{
+            background:
+              "linear-gradient(to left, rgba(15,10,31,0.9), rgba(15,10,31,0))",
+          }}
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight className="h-8 w-8" />
         </button>
       </div>
     </section>
-  )
+  );
 }
-

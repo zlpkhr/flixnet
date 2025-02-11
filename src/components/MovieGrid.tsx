@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import MovieCard from "./MovieCard"
-import type { Movie } from "@/app/types/movie"
+import MovieCard from "./MovieCard";
+import type { Movie } from "@/app/types/movie";
 
 // Mock data matching the API schema
 const movies: Movie[] = [
@@ -104,7 +104,8 @@ const movies: Movie[] = [
   {
     id: "13",
     title: "Interstellar",
-    description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+    description:
+      "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
     image_url: "/placeholder.svg?height=600&width=400",
     rating: 8.6,
   },
@@ -124,17 +125,16 @@ const movies: Movie[] = [
     image_url: "/placeholder.svg?height=600&width=400",
     rating: 8.6,
   },
-]
+];
 
 export default function MovieGrid() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
     </div>
-  )
+  );
 }
-

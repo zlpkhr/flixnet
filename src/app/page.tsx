@@ -1,6 +1,6 @@
-import MovieGrid from "@/components/MovieGrid"
-import SearchHeader from "@/components/SearchHeader"
-import FilterBar from "@/components/FilterBar"
+import MovieGrid from "@/components/MovieGrid";
+import SearchHeader from "@/components/SearchHeader";
+import FilterBar from "@/components/FilterBar";
 
 export default function Home() {
   return (
@@ -14,6 +14,5 @@ export default function Home() {
       <FilterBar />
       <MovieGrid />
     </main>
-  )
+  );
 }
-

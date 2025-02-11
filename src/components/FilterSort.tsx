@@ -1,22 +1,39 @@
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface FilterSortProps {
-  onSort: (key: "year" | "rating") => void
-  onFilter: (genre: string) => void
-  sortKey: "year" | "rating"
-  filterGenre: string
+  onSort: (key: "year" | "rating") => void;
+  onFilter: (genre: string) => void;
+  sortKey: "year" | "rating";
+  filterGenre: string;
 }
 
-export default function FilterSort({ onSort, onFilter, sortKey, filterGenre }: FilterSortProps) {
+export default function FilterSort({
+  onSort,
+  onFilter,
+  sortKey,
+  filterGenre,
+}: FilterSortProps) {
   return (
-    <div className="flex flex-wrap gap-4 mb-6">
+    <div className="mb-6 flex flex-wrap gap-4">
       <div className="flex items-center space-x-2">
         <span className="text-sm font-medium">Sort by:</span>
-        <Button variant={sortKey === "year" ? "default" : "outline"} onClick={() => onSort("year")}>
+        <Button
+          variant={sortKey === "year" ? "default" : "outline"}
+          onClick={() => onSort("year")}
+        >
           Year
         </Button>
-        <Button variant={sortKey === "rating" ? "default" : "outline"} onClick={() => onSort("rating")}>
+        <Button
+          variant={sortKey === "rating" ? "default" : "outline"}
+          onClick={() => onSort("rating")}
+        >
           Rating
         </Button>
       </div>
@@ -37,6 +54,5 @@ export default function FilterSort({ onSort, onFilter, sortKey, filterGenre }: F
         </Select>
       </div>
     </div>
-  )
+  );
 }
-
