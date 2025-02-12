@@ -1,15 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import MovieCard from "./MovieCard";
-import { Movie, PaginatedMovies } from '@/types/movie';
-import { loadMoreMovies } from '@/app/actions';
-
-interface MovieGridProps {
-  initialData: PaginatedMovies;
-  page: number;
-  onError?: (error: string) => void;
-}
+import { useMovies } from '@/hooks/useMovies';
+import { useSearchParams } from 'next/navigation';
 
 function MovieCardSkeleton() {
   return (
@@ -17,47 +11,57 @@ function MovieCardSkeleton() {
   );
 }
 
-export default function MovieGrid({ initialData, page, onError }: MovieGridProps) {
-  const [movies, setMovies] = useState<Movie[]>(initialData.items);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(initialData.total > movies.length);
+function GridLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ query }: { query?: string }) {
+  return (
+    <div className="relative">
+      <div className="opacity-30">
+        <GridLayout>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="aspect-[2/3] rounded-sm bg-purple-900/20" />
+          ))}
+        </GridLayout>
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center px-4 py-8 rounded-lg bg-black/50 backdrop-blur-sm">
+          <h3 className="text-xl font-semibold text-white mb-2">
+            {query ? `No movies found for "${query}"` : "No movies available"}
+          </h3>
+          <p className="text-white/70">
+            {query ? "Try adjusting your search or filters" : "Please check back later for new movies"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function MovieGrid() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get('query') || undefined;
   const observerTarget = useRef<HTMLDivElement>(null);
-  const limit = 12;
 
-  const loadMore = useCallback(async () => {
-    if (isLoading || !hasMore) return;
-
-    setIsLoading(true);
-    const nextPage = Math.floor(movies.length / limit);
-    
-    try {
-      const data = await loadMoreMovies(nextPage);
-      if (data.items.length > 0) {
-        setMovies(prev => [...prev, ...data.items]);
-        setHasMore(data.total > movies.length + data.items.length);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error('Error loading more movies:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLoading, hasMore, movies.length]);
-
-  useEffect(() => {
-    // Reset state when initial data changes
-    setMovies(initialData.items);
-    setHasMore(initialData.total > initialData.items.length);
-  }, [initialData]);
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    error,
+  } = useMovies({ query });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          loadMore();
-        }
-      },
+      entries => entries[0].isIntersecting && hasNextPage && !isFetchingNextPage && fetchNextPage(),
       { threshold: 0.1 }
     );
 
@@ -66,26 +70,41 @@ export default function MovieGrid({ initialData, page, onError }: MovieGridProps
     }
 
     return () => observer.disconnect();
-  }, [loadMore, hasMore]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (error) {
+    return (
+      <EmptyState query={`Error: ${error instanceof Error ? error.message : 'Failed to load movies'}`} />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <GridLayout>
+        {Array.from({ length: 12 }).map((_, i) => (
+          <MovieCardSkeleton key={i} />
+        ))}
+      </GridLayout>
+    );
+  }
+
+  if (!data?.items.length) {
+    return <EmptyState query={query} />;
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-        {isLoading && (
-          <>
-            {Array.from({ length: limit }).map((_, i) => (
-              <MovieCardSkeleton key={`skeleton-${i}`} />
-            ))}
-          </>
-        )}
-      </div>
-      
-      {hasMore && !isLoading && (
-        <div ref={observerTarget} className="h-4" /> // Hidden observer target
+    <GridLayout>
+      {data.items.map((movie) => (
+        <MovieCard key={movie.id} movie={movie} />
+      ))}
+      {isFetchingNextPage && (
+        Array.from({ length: 12 }).map((_, i) => (
+          <MovieCardSkeleton key={`skeleton-${i}`} />
+        ))
       )}
-    </div>
+      {hasNextPage && !isFetchingNextPage && (
+        <div ref={observerTarget} className="h-4" />
+      )}
+    </GridLayout>
   );
 }

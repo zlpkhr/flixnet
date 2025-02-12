@@ -11,26 +11,14 @@ const QUICK_FILTERS = [
   { label: 'Romance', query: 'romance' },
 ];
 
-interface FilterBarProps {
-  onSearchStateChange?: (isSearching: boolean) => void;
-}
-
-export default function FilterBar({ onSearchStateChange }: FilterBarProps) {
+export default function FilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentQuery = searchParams.get('query') || '';
 
   const handleFilterClick = (query: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    // Set searching state before updating URL
-    onSearchStateChange?.(true);
-    
-    if (currentQuery === query) {
-      params.delete('query');
-    } else {
-      params.set('query', query);
-    }
-    params.delete('page'); // Reset to first page on filter change
+    params.set('query', currentQuery === query ? '' : query);
     router.push(`/?${params.toString()}`);
   };
 
