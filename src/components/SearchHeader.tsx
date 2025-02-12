@@ -22,6 +22,10 @@ export default function SearchHeader() {
   const debouncedSearch = useDebounce(inputValue, 300);
 
   useEffect(() => {
+    setInputValue(query);
+  }, [query]);
+
+  useEffect(() => {
     setSearch(debouncedSearch);
   }, [debouncedSearch, setSearch]);
 

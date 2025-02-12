@@ -15,7 +15,8 @@ export default function FilterBar() {
   const { query, setSearch } = useSearch();
 
   const handleFilterClick = (filterQuery: string) => {
-    setSearch(query === filterQuery ? "" : filterQuery);
+    const newQuery = query === filterQuery ? "" : filterQuery;
+    setSearch(newQuery);
   };
 
   return (
