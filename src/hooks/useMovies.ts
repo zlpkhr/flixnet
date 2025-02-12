@@ -1,6 +1,5 @@
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMovies } from "@/services/movieService";
-import { PaginatedMovies } from "@/types/movie";
 
 interface UseMoviesOptions {
   query?: string;

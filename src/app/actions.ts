@@ -12,6 +12,8 @@ export async function loadMoreMovies(page: number, query?: string) {
     });
     return movies;
   } catch (error) {
-    throw new Error("Failed to load more movies");
+    throw new Error(
+      `Failed to load more movies: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
   }
 }

@@ -29,7 +29,7 @@ export async function getMovies({
       const errorData = await response.json();
       errorMsg = errorData.detail || errorMsg;
     } catch (err) {
-      // fall back to default error message
+      errorMsg = `${errorMsg}: ${err instanceof Error ? err.message : "Failed to parse error response"}`;
     }
     throw new Error(errorMsg);
   }
