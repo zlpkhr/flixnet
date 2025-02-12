@@ -8,6 +8,7 @@ import { loadMoreMovies } from '@/app/actions';
 interface MovieGridProps {
   initialData: PaginatedMovies;
   page: number;
+  onError?: (error: string) => void;
 }
 
 function MovieCardSkeleton() {
@@ -16,7 +17,7 @@ function MovieCardSkeleton() {
   );
 }
 
-export default function MovieGrid({ initialData, page }: MovieGridProps) {
+export default function MovieGrid({ initialData, page, onError }: MovieGridProps) {
   const [movies, setMovies] = useState<Movie[]>(initialData.items);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialData.total > movies.length);
