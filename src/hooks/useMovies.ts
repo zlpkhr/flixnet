@@ -27,6 +27,6 @@ export function useMovies({ query, limit = 12 }: UseMoviesOptions = {}) {
       pageParams: data.pageParams,
       items: data.pages.flatMap(page => page.items),
       total: data.pages[0]?.total ?? 0,
-    }),
+    })
   });
 } 

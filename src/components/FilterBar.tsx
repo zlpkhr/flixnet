@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearch } from '@/contexts/SearchContext';
 
 const QUICK_FILTERS = [
   { label: 'Action', query: 'action' },
@@ -12,25 +12,21 @@ const QUICK_FILTERS = [
 ];
 
 export default function FilterBar() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentQuery = searchParams.get('query') || '';
+  const { query, setSearch } = useSearch();
 
-  const handleFilterClick = (query: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('query', currentQuery === query ? '' : query);
-    router.push(`/?${params.toString()}`);
+  const handleFilterClick = (filterQuery: string) => {
+    setSearch(query === filterQuery ? '' : filterQuery);
   };
 
   return (
     <div className="container mx-auto px-4 py-4">
       <div className="flex flex-wrap gap-2">
-        {QUICK_FILTERS.map(({ label, query }) => (
+        {QUICK_FILTERS.map(({ label, query: filterQuery }) => (
           <button
-            key={query}
-            onClick={() => handleFilterClick(query)}
+            key={filterQuery}
+            onClick={() => handleFilterClick(filterQuery)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-              ${currentQuery === query
+              ${query === filterQuery
                 ? 'bg-purple-500 text-white'
                 : 'bg-white/5 hover:bg-white/10 text-white/80'
               }`}

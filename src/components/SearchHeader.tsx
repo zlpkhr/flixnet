@@ -2,8 +2,8 @@
 
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useSearch } from '@/contexts/SearchContext';
+import { useEffect, useState } from "react";
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -17,27 +17,13 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function SearchHeader() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [inputValue, setInputValue] = useState(searchParams.get('query') || '');
+  const { query, setSearch } = useSearch();
+  const [inputValue, setInputValue] = useState(query);
   const debouncedSearch = useDebounce(inputValue, 300);
 
   useEffect(() => {
-    const currentQuery = searchParams.get('query') || '';
-    if (currentQuery !== inputValue) {
-      setInputValue(currentQuery);
-    }
-  }, [searchParams, inputValue]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (debouncedSearch) {
-      params.set('query', debouncedSearch);
-    } else {
-      params.delete('query');
-    }
-    router.push(`/?${params.toString()}`);
-  }, [debouncedSearch, router, searchParams]);
+    setSearch(debouncedSearch);
+  }, [debouncedSearch, setSearch]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-sm">

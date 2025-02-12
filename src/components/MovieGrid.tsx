@@ -4,6 +4,14 @@ import { useEffect, useRef } from 'react';
 import MovieCard from "./MovieCard";
 import { useMovies } from '@/hooks/useMovies';
 import { useSearchParams } from 'next/navigation';
+import type { Movie } from '@/types/movie';
+
+interface TransformedMovieData {
+  pages: any[];
+  pageParams: number[];
+  items: Movie[];
+  total: number;
+}
 
 function MovieCardSkeleton() {
   return (
@@ -59,6 +67,8 @@ export default function MovieGrid() {
     error,
   } = useMovies({ query });
 
+  const transformedData = data as TransformedMovieData | undefined;
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => entries[0].isIntersecting && hasNextPage && !isFetchingNextPage && fetchNextPage(),
@@ -78,7 +88,7 @@ export default function MovieGrid() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading && !transformedData?.items?.length) {
     return (
       <GridLayout>
         {Array.from({ length: 12 }).map((_, i) => (
@@ -88,23 +98,34 @@ export default function MovieGrid() {
     );
   }
 
-  if (!data?.items.length) {
+  if (!transformedData?.items?.length) {
     return <EmptyState query={query} />;
   }
 
   return (
-    <GridLayout>
-      {data.items.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
-      ))}
-      {isFetchingNextPage && (
-        Array.from({ length: 12 }).map((_, i) => (
-          <MovieCardSkeleton key={`skeleton-${i}`} />
-        ))
+    <div className="relative">
+      {isLoading && (
+        <div className="absolute inset-0 z-10 bg-background/80 backdrop-blur-sm">
+          <GridLayout>
+            {Array.from({ length: 12 }).map((_, i) => (
+              <MovieCardSkeleton key={i} />
+            ))}
+          </GridLayout>
+        </div>
       )}
-      {hasNextPage && !isFetchingNextPage && (
-        <div ref={observerTarget} className="h-4" />
-      )}
-    </GridLayout>
+      <GridLayout>
+        {transformedData.items.map((movie: Movie) => (
+          <MovieCard key={movie.id} movie={movie} />
+        ))}
+        {isFetchingNextPage && (
+          Array.from({ length: 12 }).map((_, i) => (
+            <MovieCardSkeleton key={`skeleton-${i}`} />
+          ))
+        )}
+        {hasNextPage && !isFetchingNextPage && (
+          <div ref={observerTarget} className="h-4" />
+        )}
+      </GridLayout>
+    </div>
   );
 }
