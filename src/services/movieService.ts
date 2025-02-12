@@ -13,8 +13,6 @@ export async function getMovies({
   limit = 10,
   query,
 }: GetMoviesParams = {}): Promise<PaginatedMovies> {
-  // Simulate a slow response
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   const params = new URLSearchParams();
 
   if (skip) params.append("skip", skip.toString());
