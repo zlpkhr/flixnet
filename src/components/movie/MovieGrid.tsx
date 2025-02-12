@@ -4,56 +4,10 @@ import { useEffect, useRef } from "react";
 import MovieCard from "./MovieCard";
 import { useMovies } from "@/hooks/useMovies";
 import { useSearchParams } from "next/navigation";
-import type { Movie } from "@/types/movie";
-
-interface TransformedMovieData {
-  pages: any[];
-  pageParams: number[];
-  items: Movie[];
-  total: number;
-}
-
-function MovieCardSkeleton() {
-  return (
-    <div className="aspect-[2/3] animate-pulse rounded-sm bg-purple-900/20" />
-  );
-}
-
-function GridLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function EmptyState({ query }: { query?: string }) {
-  return (
-    <div className="relative">
-      <div className="opacity-30">
-        <GridLayout>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="aspect-[2/3] rounded-sm bg-purple-900/20" />
-          ))}
-        </GridLayout>
-      </div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="rounded-lg bg-black/50 px-4 py-8 text-center backdrop-blur-sm">
-          <h3 className="mb-2 text-xl font-semibold text-white">
-            {query ? `No movies found for "${query}"` : "No movies available"}
-          </h3>
-          <p className="text-white/70">
-            {query
-              ? "Try adjusting your search or filters"
-              : "Please check back later for new movies"}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+import type { Movie, MovieData } from "@/types/movie";
+import GridLayout from "./GridLayout";
+import MovieCardSkeleton from "./MovieCardSkeleton";
+import EmptyState from "./EmptyState";
 
 export default function MovieGrid() {
   const searchParams = useSearchParams();
@@ -69,7 +23,7 @@ export default function MovieGrid() {
     error,
   } = useMovies({ query });
 
-  const transformedData = data as TransformedMovieData | undefined;
+  const transformedData = data as MovieData | undefined;
 
   useEffect(() => {
     const observer = new IntersectionObserver(

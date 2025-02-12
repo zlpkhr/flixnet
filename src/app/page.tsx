@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import SearchHeader from "@/components/SearchHeader";
 import FilterBar from "@/components/FilterBar";
-import MovieGrid from "@/components/MovieGrid";
+import MovieGrid from "@/components/movie/MovieGrid";
 
 export const metadata: Metadata = {
   title: "FlixNet - Movie Discovery",
