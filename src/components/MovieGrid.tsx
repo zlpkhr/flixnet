@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 import MovieCard from "./MovieCard";
-import { useMovies } from '@/hooks/useMovies';
-import { useSearchParams } from 'next/navigation';
-import type { Movie } from '@/types/movie';
+import { useMovies } from "@/hooks/useMovies";
+import { useSearchParams } from "next/navigation";
+import type { Movie } from "@/types/movie";
 
 interface TransformedMovieData {
   pages: any[];
@@ -40,12 +40,14 @@ function EmptyState({ query }: { query?: string }) {
         </GridLayout>
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center px-4 py-8 rounded-lg bg-black/50 backdrop-blur-sm">
-          <h3 className="text-xl font-semibold text-white mb-2">
+        <div className="rounded-lg bg-black/50 px-4 py-8 text-center backdrop-blur-sm">
+          <h3 className="mb-2 text-xl font-semibold text-white">
             {query ? `No movies found for "${query}"` : "No movies available"}
           </h3>
           <p className="text-white/70">
-            {query ? "Try adjusting your search or filters" : "Please check back later for new movies"}
+            {query
+              ? "Try adjusting your search or filters"
+              : "Please check back later for new movies"}
           </p>
         </div>
       </div>
@@ -55,7 +57,7 @@ function EmptyState({ query }: { query?: string }) {
 
 export default function MovieGrid() {
   const searchParams = useSearchParams();
-  const query = searchParams.get('query') || undefined;
+  const query = searchParams.get("query") || undefined;
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const {
@@ -71,8 +73,12 @@ export default function MovieGrid() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => entries[0].isIntersecting && hasNextPage && !isFetchingNextPage && fetchNextPage(),
-      { threshold: 0.1 }
+      (entries) =>
+        entries[0].isIntersecting &&
+        hasNextPage &&
+        !isFetchingNextPage &&
+        fetchNextPage(),
+      { threshold: 0.1 },
     );
 
     if (observerTarget.current) {
@@ -84,7 +90,9 @@ export default function MovieGrid() {
 
   if (error) {
     return (
-      <EmptyState query={`Error: ${error instanceof Error ? error.message : 'Failed to load movies'}`} />
+      <EmptyState
+        query={`Error: ${error instanceof Error ? error.message : "Failed to load movies"}`}
+      />
     );
   }
 
@@ -117,11 +125,10 @@ export default function MovieGrid() {
         {transformedData.items.map((movie: Movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
-        {isFetchingNextPage && (
+        {isFetchingNextPage &&
           Array.from({ length: 12 }).map((_, i) => (
             <MovieCardSkeleton key={`skeleton-${i}`} />
-          ))
-        )}
+          ))}
         {hasNextPage && !isFetchingNextPage && (
           <div ref={observerTarget} className="h-4" />
         )}

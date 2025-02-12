@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface SearchContextType {
   query: string;
@@ -25,16 +31,16 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get('query') || '');
+  const [query, setQuery] = useState(searchParams.get("query") || "");
   const debouncedQuery = useDebounce(query, 300);
 
   // Update URL when debounced query changes
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     if (debouncedQuery) {
-      params.set('query', debouncedQuery);
+      params.set("query", debouncedQuery);
     } else {
-      params.delete('query');
+      params.delete("query");
     }
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }, [debouncedQuery, pathname, router, searchParams]);
@@ -52,6 +58,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
 export function useSearch() {
   const context = useContext(SearchContext);
-  if (!context) throw new Error('useSearch must be used within SearchProvider');
+  if (!context) throw new Error("useSearch must be used within SearchProvider");
   return context;
-} 
+}

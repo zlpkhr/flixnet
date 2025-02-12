@@ -1,15 +1,15 @@
-import { Metadata } from 'next';
-import SearchHeader from '@/components/SearchHeader';
-import FilterBar from '@/components/FilterBar';
-import MovieGrid from '@/components/MovieGrid';
+import { Metadata } from "next";
+import SearchHeader from "@/components/SearchHeader";
+import FilterBar from "@/components/FilterBar";
+import MovieGrid from "@/components/MovieGrid";
 
 export const metadata: Metadata = {
-  title: 'FlixNet - Movie Discovery',
-  description: 'Discover and explore your favorite movies',
+  title: "FlixNet - Movie Discovery",
+  description: "Discover and explore your favorite movies",
 };
 
 // Force dynamic rendering to ensure fresh data
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (

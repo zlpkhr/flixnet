@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import { getMovies } from '@/services/movieService';
+import { getMovies } from "@/services/movieService";
 
 export async function loadMoreMovies(page: number, query?: string) {
   const limit = 12;
@@ -12,6 +12,6 @@ export async function loadMoreMovies(page: number, query?: string) {
     });
     return movies;
   } catch (error) {
-    throw new Error('Failed to load more movies');
+    throw new Error("Failed to load more movies");
   }
-} 
+}

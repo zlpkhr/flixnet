@@ -1,5 +1,5 @@
-import SearchHeader from '@/components/SearchHeader';
-import FilterBar from '@/components/FilterBar';
+import SearchHeader from "@/components/SearchHeader";
+import FilterBar from "@/components/FilterBar";
 
 function MovieGridSkeleton() {
   return (
@@ -29,4 +29,4 @@ export default function Loading() {
       <MovieGridSkeleton />
     </main>
   );
-} 
+}

@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useSearch } from '@/contexts/SearchContext';
+import { useSearch } from "@/contexts/SearchContext";
 import { useEffect, useState } from "react";
 
 function useDebounce<T>(value: T, delay: number): T {

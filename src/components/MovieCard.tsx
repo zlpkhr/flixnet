@@ -41,9 +41,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
           </div>
         </div>
       </HoverCardTrigger>
-      <HoverCardContent
-        className="w-80 border-white/10 bg-black/90 text-white"
-      >
+      <HoverCardContent className="w-80 border-white/10 bg-black/90 text-white">
         <div className="space-y-2">
           <h3 className="font-semibold">{movie.title}</h3>
           <div className="flex items-center text-sm">
