@@ -1,6 +1,6 @@
 import { PaginatedMovies } from "../types/movie";
 
-const API_BASE_URL = "https://november7-730026606190.europe-west1.run.app";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface GetMoviesParams {
   skip?: number;
