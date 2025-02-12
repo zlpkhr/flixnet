@@ -42,7 +42,6 @@ export default function MovieCard({ movie }: MovieCardProps) {
         </div>
       </HoverCardTrigger>
       <HoverCardContent
-        side="right"
         className="w-80 border-white/10 bg-black/90 text-white"
       >
         <div className="space-y-2">
